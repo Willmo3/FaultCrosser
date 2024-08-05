@@ -25,9 +25,13 @@ end
 modelpath = ARGV[0]
 cfgname = ARGV[1]
 
-puts `tlc #{modelpath} -config #{cfgname}`
+# Notice: ruby backticks not secure: https://stackoverflow.com/questions/690151/getting-output-of-system-calls-in-ruby
+# Additionally, calling "system" preserves return code.
+puts system 'tlc', modelpath, '-config', cfgname
 
-
+# Mechanism:
+# Repeatedly write amended specs to end of model file.
+# -- Notice: this serializes TLC calls. May need to spawn new process for this.
 
 
 # # Once args are parsed, give to robustifier
