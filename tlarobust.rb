@@ -26,7 +26,7 @@ modelpath = ARGV[0]
 invname = ARGV[1]
 
 # Create directory for our file.
-Dir.mkdir("robust-data") unless File.exist?("cfgs")
+Dir.mkdir("robust-data") unless File.exist?("robust-data")
 
 # Write the config file for the invariant.
 File.open("robust-data/robust.cfg", "w") { | f | f.write("SPECIFICATION Spec\nINVARIANT #{invname}") }
