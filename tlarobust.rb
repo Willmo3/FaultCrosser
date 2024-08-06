@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+require 'fault_iterator.rb'
+
 # frozen_string_literal: true
 
 # TLA-Robust -- a script for calculating robustness of TLA+ models.
@@ -12,20 +14,21 @@
 # ***** HELPER FNS ***** #
 def usage
   puts "USAGE:"
-  puts "tla-robust [path to model] [name of invariant]"
+  puts "tla-robust [path to model] [name of invariant] [faults]"
 end
 
 # ***** MAIN PROGRAM ***** #
 
-if ARGV.length != 2
+if ARGV.length != 3
   usage
   exit 1
 end
 
 modelpath = ARGV[0]
 invname = ARGV[1]
+faults = ARGV[2]
 
-# Create directory for our file.
+# Create directory for our data
 Dir.mkdir("robust-data") unless File.exist?("robust-data")
 
 # Write the config file for the invariant.
