@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require_relative 'fault_tree.rb'
+require_relative 'tlarobust/fault_tree.rb'
 
 # frozen_string_literal: true
 
