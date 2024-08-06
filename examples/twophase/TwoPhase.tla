@@ -35,14 +35,20 @@ IncTime == UNCHANGED <<clientVars>> /\ Net!IncTime
 
 \* Fault operations
 
-DuplicateMsg(msg) == UNCHANGED<<clientVars>> /\ Net!DuplicateMsg(msg)
+\* CHANGING THESE TO HAVE MINIMAL INTERFACE.
+\* This way, easier for tool to automatically iterate thru.
+DuplicateMsg == 
+    /\ UNCHANGED<<clientVars>> 
+    /\ \E msg \in sentMsgs: Net!DuplicateMsg(msg)
 
 \* Since message corruption is domain-specific, we have to use client code.
-CorruptMsg(msg) == UNCHANGED<<clientVars>> /\ Net!CorruptMsg(msg, Sys!CorruptMsg)
+CorruptMsg == 
+    /\ UNCHANGED<<clientVars>> 
+    /\ \E msg \in sentMsgs: Net!CorruptMsg(msg, Sys!CorruptMsg)
 
-DropMsg(msg) == UNCHANGED<<clientVars>> /\ Net!DropMsg(msg)
-
-
+DropMsg == 
+    /\ UNCHANGED<<clientVars>> 
+    /\ \E msg \in sentMsgs: Net!DropMsg(msg)
 
 TypeOK == Net!TypeOK
 
@@ -67,15 +73,15 @@ Next ==
 
 DupNext ==
     \/ Next
-    \/ \E msg \in sentMsgs: DuplicateMsg(msg)
+    \/ DuplicateMsg
 
 CorruptNext ==
     \/ Next
-    \/ \E msg \in sentMsgs: CorruptMsg(msg)
+    \/ CorruptMsg
 
 DropNext ==
     \/ Next
-    \/ \E msg \in sentMsgs: DropMsg(msg)
+    \/ DropMsg
 
 DropDupNext ==
     \/ DropNext

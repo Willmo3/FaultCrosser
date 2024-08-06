@@ -38,12 +38,23 @@ IncTime == UNCHANGED<<clientVars>> /\ t < 4 /\ Net!IncTime
 \* Fault operations
 \* For model checking purposes, only perform these faults up to a certain time.
 
-DuplicateMsg(msg) == UNCHANGED<<clientVars>> /\ t < 6 /\ Net!DuplicateMsg(msg)
+\* CHANGING THESE TO HAVE MINIMAL INTERFACE.
+\* This way, easier for tool to automatically iterate thru.
+DuplicateMsg == 
+    /\ UNCHANGED<<clientVars>> 
+    /\ t < 6 
+    /\ \E msg \in sentMsgs: Net!DuplicateMsg(msg)
 
 \* Since message corruption is domain-specific, we have to use client code.
-CorruptMsg(msg) == UNCHANGED<<clientVars>> /\ t < 6 /\ Net!CorruptMsg(msg, Sys!CorruptMsg)
+CorruptMsg == 
+    /\ UNCHANGED<<clientVars>> 
+    /\ t < 6 
+    /\ \E msg \in sentMsgs: Net!CorruptMsg(msg, Sys!CorruptMsg)
 
-DropMsg(msg) == UNCHANGED<<clientVars>> /\ t < 6 /\ Net!DropMsg(msg)
+DropMsg == 
+    /\ UNCHANGED<<clientVars>> 
+    /\ t < 6 
+    /\ \E msg \in sentMsgs: Net!DropMsg(msg)
 
 TypeOK == Net!TypeOK
 
@@ -68,15 +79,15 @@ Next ==
 \* where messages may be randomly duplicated.
 DupNext ==
     \/ Next
-    \/ \E msg \in sentMsgs: DuplicateMsg(msg)
+    \/ DuplicateMsg
 
 CorruptNext ==
     \/ Next
-    \/ \E msg \in sentMsgs: CorruptMsg(msg)
+    \/ CorruptMsg
 
 DropNext ==
     \/ Next
-    \/ \E msg \in sentMsgs: DropMsg(msg)
+    \/ DropMsg
 
 DropDupNext ==
     \/ DropNext
