@@ -12,7 +12,7 @@
 # ***** HELPER FNS ***** #
 def usage
   puts "USAGE:"
-  puts "tla-robust [path to model] [path to cfg file]"
+  puts "tla-robust [path to model] [name of invariant]"
 end
 
 # ***** MAIN PROGRAM ***** #
@@ -23,11 +23,14 @@ if ARGV.length != 2
 end
 
 modelpath = ARGV[0]
-cfgname = ARGV[1]
+invname = ARGV[1]
+
+# Write the config file for the invariant.
+File.open("robust.cfg", "w") { | f | f.write("SPECIFICATION Spec\nINVARIANT #{invname}") }
 
 # Notice: ruby backticks not secure: https://stackoverflow.com/questions/690151/getting-output-of-system-calls-in-ruby
 # Additionally, calling "system" preserves return code.
-puts system 'tlc', modelpath, '-config', cfgname
+puts system 'tlc', modelpath, '-config', 'robust.cfg'
 
 # Mechanism:
 # Repeatedly write amended specs to end of model file.
