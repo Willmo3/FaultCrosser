@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require 'fault_iterator.rb'
+require_relative 'fault_iterator.rb'
 
 # frozen_string_literal: true
 
@@ -27,6 +27,8 @@ end
 modelpath = ARGV[0]
 invname = ARGV[1]
 faults = ARGV[2]
+
+it = FaultIterator(faults)
 
 # Create directory for our data
 Dir.mkdir("robust-data") unless File.exist?("robust-data")
