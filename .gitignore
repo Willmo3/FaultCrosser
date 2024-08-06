@@ -2,7 +2,7 @@ states*
 .idea
 
 # symlinks
-examples/twophase/tlarobust.rb
+examples/twophase/*.rb
 
 # data cache
 robust-data

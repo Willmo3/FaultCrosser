@@ -1,3 +1,6 @@
 #!/usr/bin/env sh
 
-cd examples/twophase && ln -s ../../tlarobust.rb .
+mkdir -p examples/twophase && cd examples/twophase || exit
+
+ln -s ../../tlarobust.rb .
+ln -s ../../fault_iterator.rb .
