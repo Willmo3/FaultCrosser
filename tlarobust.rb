@@ -25,12 +25,15 @@ end
 modelpath = ARGV[0]
 invname = ARGV[1]
 
+# Create directory for our file.
+Dir.mkdir("robust-cfgs") unless File.exist?("cfgs")
+
 # Write the config file for the invariant.
-File.open("robust.cfg", "w") { | f | f.write("SPECIFICATION Spec\nINVARIANT #{invname}") }
+File.open("robust-cfgs/robust.cfg", "w") { | f | f.write("SPECIFICATION Spec\nINVARIANT #{invname}") }
 
 # Notice: ruby backticks not secure: https://stackoverflow.com/questions/690151/getting-output-of-system-calls-in-ruby
 # Additionally, calling "system" preserves return code.
-puts system 'tlc', modelpath, '-config', 'robust.cfg'
+puts system 'tlc', modelpath, '-config', 'robust-cfgs/robust.cfg'
 
 # Mechanism:
 # Repeatedly write amended specs to end of model file.
