@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require_relative 'tlarobust/fault_tree.rb'
+require_relative 'tlarobust/print_visitor.rb'
 
 # frozen_string_literal: true
 
@@ -28,7 +29,15 @@ modelpath = ARGV[0]
 invname = ARGV[1]
 faults = ARGV[2]
 
-it = FaultTree.new(faults)
+
+# ***** FAULT ITERATION ***** #
+
+# iterate thru all possibilities of faults.
+tree = FaultTree.new(faults)
+tree.traverse(PrintVisitor.new)
+
+
+# ***** MODEL CHECKING ***** #
 
 # Create directory for our data
 Dir.mkdir("robust-data") unless File.exist?("robust-data")
@@ -39,18 +48,3 @@ File.open("robust-data/robust.cfg", "w") { | f | f.write("SPECIFICATION Spec\nIN
 # Notice: ruby backticks not secure: https://stackoverflow.com/questions/690151/getting-output-of-system-calls-in-ruby
 # Additionally, calling "system" preserves return code.
 puts system 'tlc', modelpath, '-config', 'robust-data/robust.cfg'
-
-# Mechanism:
-# Repeatedly write amended specs to end of model file.
-# -- Notice: this serializes TLC calls. May need to spawn new process for this.
-
-
-# # Once args are parsed, give to robustifier
-# class Robustifier
-#   def initialize(modelpath, invname)
-#     @modelpath = modelpath
-#     @invname = invname
-#   end
-# end
-
-
