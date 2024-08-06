@@ -8,6 +8,6 @@
 class FaultIterator
   # Initializing class = read in faults
   def initialize(file)
-    @faults = File.foreach(file).reduce(Set()) { |set, line| set.add(line)}
+    @faults = File.foreach(file).reduce(Set.new) { |set, line| set.add(line)}
   end
 end

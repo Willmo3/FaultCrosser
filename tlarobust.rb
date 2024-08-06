@@ -28,7 +28,7 @@ modelpath = ARGV[0]
 invname = ARGV[1]
 faults = ARGV[2]
 
-it = FaultIterator(faults)
+it = FaultIterator.new(faults)
 
 # Create directory for our data
 Dir.mkdir("robust-data") unless File.exist?("robust-data")
