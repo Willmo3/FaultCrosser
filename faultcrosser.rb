@@ -54,20 +54,18 @@ File.open(fault_model_cfg, "w") do | f |
   invs.each { | item | f.write "\t#{item}\n" }
 end
 
-
 # ----- prepare fault-centered TLA+ model for model checking.
 
-# Now, copy in the relevant data for the faults
 model_name = "RobustModel"
 fault_model_path = "#{data_dir}/#{model_name}.tla"
 
-# Read in all the lines.
 lines = File.readlines modelpath
 # Must be at least two lines in a valid TLA+ model.
 unless lines.length > 1
   puts "Error: invalid TLA+ model."
   exit 1
 end
+
 # Configure model to share modelname
 lines[0] = "---- MODULE #{model_name} ----\n"
 
