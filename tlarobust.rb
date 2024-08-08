@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
-require_relative 'tlarobust/fault_tree.rb'
-require_relative 'tlarobust/print_visitor.rb'
+require_relative "tlarobust/fault_tree.rb"
+require_relative "tlarobust/print_visitor.rb"
 
 # frozen_string_literal: true
 
@@ -18,7 +18,8 @@ def usage
   puts "tla-robust [path to model] [name of invariant] [faults]"
 end
 
-# ***** MAIN PROGRAM ***** #
+
+# ***** PARSE ARGS ***** #
 
 if ARGV.length != 3
   usage
@@ -30,21 +31,33 @@ invname = ARGV[1]
 faults = ARGV[2]
 
 
-# ***** FAULT ITERATION ***** #
+# ***** CONFIGURE FILES ***** #
 
-# iterate thru all possibilities of faults.
-tree = FaultTree.new(faults)
-tree.traverse(PrintVisitor.new)
+Dir.mkdir("robust-data") unless File.exist?("robust-data")
+
+# Write the config file for the invariant.
+robustconfigpath = "robust-data/robust.cfg"
+File.open(robustconfigpath, "w") { | f | f.write("SPECIFICATION Spec\nINVARIANT #{invname}") }
+
+# Now, copy in the relevant data for the faults
+modelname = "RobustModel"
+robustmodelpath = "robust-data/#{modelname}.tla"
+
+# Read in all the lines.
+lines = File.readlines(modelpath)
+# Must be at least two lines in a valid TLA+ model.
+unless lines.length > 1
+  puts "Error: invalid TLA+ model."
+  exit 1
+end
+# Configure model to share modelname
+lines[0] = "---- MODULE #{modelname} ----\n"
+
+File.open(robustmodelpath, "w") { | f | f.write lines.join }
 
 
 # ***** MODEL CHECKING ***** #
 
-# Create directory for our data
-Dir.mkdir("robust-data") unless File.exist?("robust-data")
-
-# Write the config file for the invariant.
-File.open("robust-data/robust.cfg", "w") { | f | f.write("SPECIFICATION Spec\nINVARIANT #{invname}") }
-
 # Notice: ruby backticks not secure: https://stackoverflow.com/questions/690151/getting-output-of-system-calls-in-ruby
 # Additionally, calling "system" preserves return code.
-puts system 'tlc', modelpath, '-config', 'robust-data/robust.cfg'
+puts system "tlc", robustmodelpath, "-config", robustconfigpath
