@@ -17,7 +17,7 @@ class FaultModel
     # Assuming there is some FaultNext.
     lines = lines[0...-1]
     # Adding blank line to be replaced later.
-    lines << "FaultSpec == Init /\\ [][FaultNext]_vars\n\n===="
+    lines << "\nFaultSpec == Init /\\ [][FaultNext]_vars\n===="
 
     unless File.write(@path, lines.join)
       puts "Error: unable to write modified model"
@@ -39,8 +39,8 @@ class FaultModel
     faults.each do | fault |
       fault_next << " \\/ " << fault.strip
     end
-    lines[-2] = fault_next
-    
+    lines[-4] = fault_next
+
     unless File.write(@path, lines.join)
       puts "Error: unable to write modified model"
       exit 1
