@@ -16,10 +16,8 @@ class FaultModel
     # Clear the last line. This should be a ====, indicating module ending.
     # Assuming there is some FaultNext.
     lines = lines[0...-1]
-    lines << "FaultSpec == Init /\\ [][FaultNext]_vars"
     # Adding blank line to be replaced later.
-    lines << ""
-    lines << "===="
+    lines << "FaultSpec == Init /\\ [][FaultNext]_vars\n\n===="
 
     unless File.write(@path, lines.join)
       puts "Error: unable to write modified model"
@@ -37,11 +35,12 @@ class FaultModel
     end
 
     # Create FaultNext
-    spec = "FaultNext ==\n\t\\/ Next\n"
-    faults.each { | fault | spec = spec << "\t\\/ #{fault}" }
-    spec = spec << "\n"
-    lines[-2] = spec
-
+    fault_next = "FaultNext == Next"
+    faults.each do | fault |
+      fault_next << " \\/ " << fault.strip
+    end
+    lines[-2] = fault_next
+    
     unless File.write(@path, lines.join)
       puts "Error: unable to write modified model"
       exit 1
