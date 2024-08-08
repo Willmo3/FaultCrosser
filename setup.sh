@@ -3,4 +3,4 @@
 mkdir -p examples/twophase && cd examples/twophase || exit
 
 ln -s ../../tlarobust.rb .
-ln -s ../../tlarobust .
+ln -s ../../src .

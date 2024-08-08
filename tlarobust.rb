@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
-require_relative "tlarobust/fault_tree.rb"
-require_relative "tlarobust/print_visitor.rb"
+require_relative "src/fault_tree.rb"
+require_relative "src/print_visitor.rb"
 
 # frozen_string_literal: true
 
