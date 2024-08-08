@@ -33,15 +33,15 @@ faults = ARGV[2]
 
 # ***** CONFIGURE FILES ***** #
 
-Dir.mkdir("robust-data") unless File.exist?("robust-data")
+Dir.mkdir("fault-data") unless File.exist?("fault-data")
 
 # Write the config file for the invariant.
-robustconfigpath = "robust-data/robust.cfg"
-File.open(robustconfigpath, "w") { | f | f.write("SPECIFICATION Spec\nINVARIANT #{invname}") }
+fault_model_cfg = "fault-data/fault-model.cfg"
+File.open(fault_model_cfg, "w") { | f | f.write("SPECIFICATION Spec\nINVARIANT #{invname}") }
 
 # Now, copy in the relevant data for the faults
-modelname = "RobustModel"
-robustmodelpath = "robust-data/#{modelname}.tla"
+model_name = "RobustModel"
+fault_model_path = "robust-data/#{model_name}.tla"
 
 # Read in all the lines.
 lines = File.readlines(modelpath)
@@ -51,13 +51,13 @@ unless lines.length > 1
   exit 1
 end
 # Configure model to share modelname
-lines[0] = "---- MODULE #{modelname} ----\n"
+lines[0] = "---- MODULE #{model_name} ----\n"
 
-File.open(robustmodelpath, "w") { | f | f.write lines.join }
+File.open(fault_model_path, "w") { | f | f.write lines.join }
 
 
 # ***** MODEL CHECKING ***** #
 
 # Notice: ruby backticks not secure: https://stackoverflow.com/questions/690151/getting-output-of-system-calls-in-ruby
 # Additionally, calling "system" preserves return code.
-puts system "tlc", robustmodelpath, "-config", robustconfigpath
+puts system "tlc", fault_model_path, "-config", fault_model_cfg

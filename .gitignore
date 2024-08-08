@@ -6,4 +6,4 @@ examples/twophase/*.rb
 examples/twophase/src
 
 # data cache
-robust-data
+fault-data
