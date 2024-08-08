@@ -34,7 +34,7 @@ faults = ARGV[2]
 # ***** CONFIGURE FILES ***** #
 
 data_dir = "fault-data"
-Dir.mkdir(data_dir)unless File.exist?("fault-data")
+Dir.mkdir data_dir unless File.exist? "fault-data"
 
 # ----- prepare config file for user supplied invariants
 
@@ -50,7 +50,7 @@ end
 
 fault_model_cfg = "#{data_dir}/fault-model.cfg"
 File.open(fault_model_cfg, "w") do | f |
-  f.write("SPECIFICATION Spec\nINVARIANTS\n")
+  f.write "SPECIFICATION Spec\nINVARIANTS\n"
   invs.each { | item | f.write "\t#{item}\n" }
 end
 
@@ -62,7 +62,7 @@ model_name = "RobustModel"
 fault_model_path = "#{data_dir}/#{model_name}.tla"
 
 # Read in all the lines.
-lines = File.readlines(modelpath)
+lines = File.readlines modelpath
 # Must be at least two lines in a valid TLA+ model.
 unless lines.length > 1
   puts "Error: invalid TLA+ model."
