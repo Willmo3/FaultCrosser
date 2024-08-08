@@ -9,13 +9,13 @@ require_relative "src/print_visitor.rb"
 # Given:
 # -- A newline-separated list of fault action names
 # -- A composed model
-# -- The name of a safety property to evaluate robustness against.
+# -- A newline-separated list of safety property (invariant) names to evaluate against.
 # TLA-Robust will compute the maximum robustness with respect to the named faults.
 
 # ***** HELPER FNS ***** #
 def usage
   puts "USAGE:"
-  puts "tla-robust [path to model] [name of invariant] [faults]"
+  puts "tla-robust [path to model] [path to file with invariants] [faults]"
 end
 
 
@@ -27,21 +27,39 @@ if ARGV.length != 3
 end
 
 modelpath = ARGV[0]
-invname = ARGV[1]
+invspath = ARGV[1]
 faults = ARGV[2]
 
 
 # ***** CONFIGURE FILES ***** #
 
-Dir.mkdir("fault-data") unless File.exist?("fault-data")
+data_dir = "fault-data"
+Dir.mkdir(data_dir)unless File.exist?("fault-data")
 
-# Write the config file for the invariant.
-fault_model_cfg = "fault-data/fault-model.cfg"
-File.open(fault_model_cfg, "w") { | f | f.write("SPECIFICATION Spec\nINVARIANT #{invname}") }
+# ----- prepare config file for user supplied invariants
+
+# Read in invariants
+
+invs = File.readlines invspath
+unless invs.length > 0
+  puts "Error: no invariants specified in #{invspath}"
+  exit 1
+end
+
+# Write invariants to cfg file.
+
+fault_model_cfg = "#{data_dir}/fault-model.cfg"
+File.open(fault_model_cfg, "w") do | f |
+  f.write("SPECIFICATION Spec\nINVARIANTS\n")
+  invs.each { | item | f.write "\t#{item}\n" }
+end
+
+
+# ----- prepare fault-centered TLA+ model for model checking.
 
 # Now, copy in the relevant data for the faults
 model_name = "RobustModel"
-fault_model_path = "robust-data/#{model_name}.tla"
+fault_model_path = "#{data_dir}/#{model_name}.tla"
 
 # Read in all the lines.
 lines = File.readlines(modelpath)
