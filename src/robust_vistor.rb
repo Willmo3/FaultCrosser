@@ -14,8 +14,8 @@ class RobustVisitor
 
   # The RobustVisitor takes a path to a TLA+ model.
   # This model will be modified by the visitor.
-  def initialize(model_path, config_path)
-    @model_path = model_path
+  def initialize(model, config_path)
+    @model = model
     @config_path = config_path
 
     @model = FaultModel.new @model_path

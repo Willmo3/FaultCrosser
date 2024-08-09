@@ -61,6 +61,7 @@ fault_model_path = "#{data_dir}/#{model_name}.tla"
 
 lines = File.readlines modelpath
 # Must be at least two lines in a valid TLA+ model.
+# The MODULE declaration and terminating ====
 unless lines.length > 1
   puts "Error: invalid TLA+ model."
   exit 1
@@ -71,12 +72,17 @@ lines[0] = "---- MODULE #{model_name} ----\n"
 
 File.open(fault_model_path, "w") { | f | f.write lines.join }
 
+
 # ***** MODEL CHECKING ***** #
 
-# For the heck of it, write a new FaultSpec in the fault model.
+# Traverse the lattice of faults
+# Finding the maximally sized robust ones
+lattice = FaultTree.new(faults)
 visitor = RobustVisitor.new(fault_model_path, fault_model_cfg)
-tree = FaultTree.new(faults)
 
-tree.traverse(visitor)
+lattice.traverse(visitor)
 
-puts "Robustness: " << visitor.robustness.join(",")
+# Formatted output
+print "Robustness: "
+visitor.robustness.each {| set | print "{ " << set.join(", ") << " }, "}
+puts
