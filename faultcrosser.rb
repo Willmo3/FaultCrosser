@@ -2,6 +2,8 @@
 
 require_relative "src/fault_tree.rb"
 require_relative "src/robust_vistor"
+require_relative "src/fault_model"
+require_relative "src/fault_config"
 
 # frozen_string_literal: true
 
@@ -38,21 +40,9 @@ Dir.mkdir data_dir unless File.exist? "fault-data"
 
 # ----- prepare config file for user supplied invariants
 
-# Read in invariants
+cfg_path = "#{data_dir}/fault-model.cfg"
+fault_config = FaultConfig.new(invspath, cfg_path)
 
-invs = File.readlines invspath
-unless invs.length > 0
-  puts "Error: no invariants specified in #{invspath}"
-  exit 1
-end
-
-# Write invariants to cfg file.
-
-fault_model_cfg = "#{data_dir}/fault-model.cfg"
-File.open(fault_model_cfg, "w") do | f |
-  f.write "SPECIFICATION FaultSpec\nINVARIANTS\n"
-  invs.each { | item | f.write "\t#{item}\n" }
-end
 
 # ----- prepare fault-centered TLA+ model for model checking.
 
@@ -85,7 +75,7 @@ fault_model = FaultModel.new(fault_model_path)
 # Traverse the lattice of faults
 # Finding the maximally sized robust ones
 lattice = FaultTree.new(faults)
-visitor = RobustVisitor.new(fault_model, fault_model_cfg)
+visitor = RobustVisitor.new(fault_model, fault_config)
 
 lattice.traverse(visitor)
 
