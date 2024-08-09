@@ -25,7 +25,7 @@ class RobustVisitor
 
   # Visit: currently, we assume that the traversal process will be serialized.
   def visit(faults)
-    faults = Set.new(faults)
+    faults = Set.new faults
 
     # Make sure that these faults aren't a subset of an existing fault
     if @robustness.any? {| set | faults.subset? set }
@@ -33,20 +33,20 @@ class RobustVisitor
     end
 
     # Prime file to check against this set of faults.
-    @model.fault_spec(faults)
+    @model.fault_spec faults
 
     # Flush the TLC states directory.
     # Otherwise, it may whine abt files already existing
     # If we move too fast.
     if Dir.exist? "states"
-      FileUtils.rm_rf("states")
+      FileUtils.rm_rf "states"
     end
 
     # Suppress TLC output and model check
     stdout = $stdout.clone
-    $stdout.reopen("/dev/null")
+    $stdout.reopen "/dev/null"
     mc = system "tlc", @model.path, "-config", @config_path
-    $stdout.reopen(stdout)
+    $stdout.reopen stdout
 
     if mc
       # If we're robust against this combination of faults, add it as a maximal robust envelope.
