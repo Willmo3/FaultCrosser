@@ -14,8 +14,8 @@ class RobustVisitor
 
   # The RobustVisitor takes a path to a TLA+ model.
   # This model will be modified by the visitor.
-  def initialize(model, config_path)
-    @model = model
+  def initialize(model_path, config_path)
+    @model_path = model_path
     @config_path = config_path
 
     @model = FaultModel.new @model_path
@@ -53,10 +53,10 @@ class RobustVisitor
       # If we're robust against this combination of faults, add it as a maximal robust envelope.
       # Do not traverse further.
       @robustness << faults
-      false
-    else
-      # Otherwise, descend to subsets.
-      true
     end
+
+    # Only traverse further if model check failed
+    # I.e. check subsets
+    !mc
   end
 end
