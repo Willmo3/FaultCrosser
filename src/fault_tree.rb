@@ -8,7 +8,7 @@
 class FaultTree
   # Initializing class = read in faults
   def initialize(file)
-    @faults = File.foreach(file).reduce(Array.new) { |arr, line| arr.append(line)}
+    @faults = File.foreach(file).reduce(Array.new) { |arr, line| arr.append(line.strip)}
   end
 
   # Traverse the set of faults.
