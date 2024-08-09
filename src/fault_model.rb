@@ -2,6 +2,7 @@
 # Author: Will Morris
 
 class FaultModel
+  attr_reader :path
 
   # To initialize a fault model, pass it a path.
   def initialize(path)

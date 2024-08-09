@@ -72,13 +72,20 @@ lines[0] = "---- MODULE #{model_name} ----\n"
 
 File.open(fault_model_path, "w") { | f | f.write lines.join }
 
+# Now, prepare fault_model object to abstract over files.
+fault_model = FaultModel.new(fault_model_path)
+
 
 # ***** MODEL CHECKING ***** #
+
+# # First: sanity check, ensure the model works in the normative environment.
+#
+# unless system "tlc", fault_model_path, "-config", fault_model_cfg
 
 # Traverse the lattice of faults
 # Finding the maximally sized robust ones
 lattice = FaultTree.new(faults)
-visitor = RobustVisitor.new(fault_model_path, fault_model_cfg)
+visitor = RobustVisitor.new(fault_model, fault_model_cfg)
 
 lattice.traverse(visitor)
 

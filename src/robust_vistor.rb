@@ -12,13 +12,12 @@ require "fileutils"
 class RobustVisitor
   attr_reader :robustness
 
-  # The RobustVisitor takes a path to a TLA+ model.
-  # This model will be modified by the visitor.
-  def initialize(model_path, config_path)
-    @model_path = model_path
+  # Model: tla file being checked.
+  # config_path: path to config for TLC model checking.
+  def initialize(model, config_path)
     @config_path = config_path
+    @model = model
 
-    @model = FaultModel.new @model_path
     @robustness = Set.new
   end
 
@@ -46,7 +45,7 @@ class RobustVisitor
     # Suppress TLC output and model check
     stdout = $stdout.clone
     $stdout.reopen("/dev/null")
-    mc = system "tlc", @model_path, "-config", @config_path
+    mc = system "tlc", @model.path, "-config", @config_path
     $stdout.reopen(stdout)
 
     if mc
