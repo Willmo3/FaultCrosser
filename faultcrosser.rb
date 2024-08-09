@@ -28,8 +28,8 @@ if ARGV.length != 3
   exit 1
 end
 
-modelpath = ARGV[0]
-invspath = ARGV[1]
+model_path = ARGV[0]
+invs_path = ARGV[1]
 faults = ARGV[2]
 
 
@@ -41,7 +41,7 @@ Dir.mkdir data_dir unless File.exist? "fault-data"
 # ----- prepare config file for user supplied invariants
 
 cfg_path = "#{data_dir}/fault-model.cfg"
-fault_config = FaultConfig.new(invspath, cfg_path)
+fault_config = FaultConfig.new(invs_path, cfg_path)
 
 
 # ----- prepare fault-centered TLA+ model for model checking.
@@ -49,7 +49,7 @@ fault_config = FaultConfig.new(invspath, cfg_path)
 model_name = "RobustModel"
 fault_model_path = "#{data_dir}/#{model_name}.tla"
 
-lines = File.readlines modelpath
+lines = File.readlines model_path
 # Must be at least two lines in a valid TLA+ model.
 # The MODULE declaration and terminating ====
 unless lines.length > 1
