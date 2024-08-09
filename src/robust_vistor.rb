@@ -1,4 +1,3 @@
-# frozen_string_literal: true
 require_relative "fault_model"
 require "fileutils"
 
@@ -27,7 +26,14 @@ class RobustVisitor
 
   # Visit: currently, we assume that the traversal process will be serialized.
   def visit(faults)
-    # Make sure we're checking against this set of faults!
+    faults = Set.new(faults)
+
+    # Make sure that these faults aren't a subset of an existing fault
+    if @robustness.any? {| set | faults.subset? set }
+      return false
+    end
+
+    # Prime file to check against this set of faults.
     @model.fault_spec(faults)
 
     # Flush the TLC states directory.

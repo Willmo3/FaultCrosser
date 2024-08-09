@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require_relative "src/fault_tree.rb"
-require_relative "src/print_visitor.rb"
+require_relative "src/robust_vistor"
 
 # frozen_string_literal: true
 
@@ -50,7 +50,7 @@ end
 
 fault_model_cfg = "#{data_dir}/fault-model.cfg"
 File.open(fault_model_cfg, "w") do | f |
-  f.write "SPECIFICATION Spec\nINVARIANTS\n"
+  f.write "SPECIFICATION FaultSpec\nINVARIANTS\n"
   invs.each { | item | f.write "\t#{item}\n" }
 end
 
@@ -71,9 +71,12 @@ lines[0] = "---- MODULE #{model_name} ----\n"
 
 File.open(fault_model_path, "w") { | f | f.write lines.join }
 
-
 # ***** MODEL CHECKING ***** #
 
-# Notice: ruby backticks not secure: https://stackoverflow.com/questions/690151/getting-output-of-system-calls-in-ruby
-# Additionally, calling "system" preserves return code.
-puts system "tlc", fault_model_path, "-config", fault_model_cfg
+# For the heck of it, write a new FaultSpec in the fault model.
+visitor = RobustVisitor.new(fault_model_path, fault_model_cfg)
+tree = FaultTree.new(faults)
+
+tree.traverse(visitor)
+
+puts "Robustness: " << visitor.robustness.join(",")
