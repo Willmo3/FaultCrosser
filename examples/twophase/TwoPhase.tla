@@ -26,9 +26,9 @@ Sys == INSTANCE Sys WITH
 
 PrepareMsg == Sys!PrepareMsg /\ UNCHANGED<<netVars>>
 
-SndMsg(payload) == UNCHANGED<<clientVars>> /\ Net!SndMsg(payload)
+SndMsg == UNCHANGED<<clientVars>> /\ \E payload \in payloads: Net!SndMsg(payload)
 
-DeliverMsg(msg) == Sys!RcvMsg(msg.payload) /\ Net!DeliverMsg(msg)
+DeliverMsg == Sys!RcvMsg(msg.payload) /\ \E msg \in sentMsgs: Net!DeliverMsg(msg)
 
 IncTime == UNCHANGED <<clientVars>> /\ Net!IncTime
 
@@ -65,8 +65,8 @@ Init == Sys!Init /\ Net!Init
 
 Next ==
     \/ PrepareMsg
-    \/ \E payload \in payloads: SndMsg(payload)
-    \/ \E msg \in sentMsgs: DeliverMsg(msg)
+    \/ SndMsg
+    \/ DeliverMsg
     \/ IncTime
 
 \* Faulty nexts
