@@ -20,10 +20,7 @@ class FaultTree
 
     sub_faults = Queue.new
     sub_faults.enq faults
-
-    # TODO: debug. Appears to be readding visited data.
-    # Visited but not robust -> doesn't fail to visit
-    # St
+    
     until sub_faults.empty?
       fault = sub_faults.deq
 
