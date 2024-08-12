@@ -15,15 +15,24 @@ class FaultTree
   # Visitor: Fault-tree visitor. Must follow visitor API
   # I.e. visit returns true -> continue iterating.
   def traverse(visitor, faults=@faults)
-    # Does the visitor wish to continue iterating?
-    if visitor.visit(faults)
-      # If so, visit every combination of faults after this.
-      for i in 0...faults.length
-        new_combo = faults[0...i].concat faults[i+1..-1]
-        traverse(visitor, new_combo)
+    # Traverse procedure:
+    # Traverse lattice in breadth-first order.
+
+    sub_faults = Queue.new
+    sub_faults.enq faults
+
+    # TODO: debug. Appears to be readding visited data.
+    # Visited but not robust -> doesn't fail to visit
+    # St
+    until sub_faults.empty?
+      fault = sub_faults.deq
+
+      # If this fault is valid, enqueue every subcombination of faults to be visited.
+      if visitor.visit(fault)
+        for i in 0...fault.length
+          sub_faults.enq(fault[0...i].concat fault[i + 1..-1])
+        end
       end
     end
   end
-
-  # To iterate over a set of faults, iterate over the lattice.
 end
