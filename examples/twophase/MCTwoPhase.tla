@@ -75,25 +75,6 @@ Next ==
     \/ \E msg \in sentMsgs: DeliverMsg(msg)
     \/ IncTime
 
-\* A deviated environment 
-\* where messages may be randomly duplicated.
-DupNext ==
-    \/ Next
-    \/ DuplicateMsg
-
-CorruptNext ==
-    \/ Next
-    \/ CorruptMsg
-
-DropNext ==
-    \/ Next
-    \/ DropMsg
-
-DropDupNext ==
-    \/ DropNext
-    \/ DupNext
-
-\* Change the spec to evaluate against a fault configuration.
 Spec == Init /\ [][Next]_vars
 
 =============================================================================

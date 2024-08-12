@@ -69,25 +69,6 @@ Next ==
     \/ DeliverMsg
     \/ IncTime
 
-\* Faulty nexts
-
-DupNext ==
-    \/ Next
-    \/ DuplicateMsg
-
-CorruptNext ==
-    \/ Next
-    \/ CorruptMsg
-
-DropNext ==
-    \/ Next
-    \/ DropMsg
-
-DropDupNext ==
-    \/ DropNext
-    \/ DupNext
-
-\* Change the next to try different fault configurations!
 Spec == Init /\ [][Next]_vars
 
 =============================================================================
